@@ -86,3 +86,21 @@ def report(limit=0, offset=0):
     # Cerrar la conexión con la base de datos
     conn.close()
     return query_results
+
+
+def nationality_review():
+
+    conn = sqlite3.connect(db['database'])
+    c = conn.cursor()
+
+    query = 'SELECT count(nationality), nationality  FROM persona GROUP BY nationality;'
+
+    c.execute(query)
+    query_results = c.fetchall()
+
+    conn.close()
+
+    unzipped_object = zip(*query_results)
+    unzipped_list = list(unzipped_object)
+    
+    return unzipped_list

@@ -104,7 +104,22 @@ def comparativa():
                     nationality_review</h3>'''
         result += '''<h3>Esa funcion debe devolver los datos que necesite
                     para implementar el grafico a mostrar</h3>'''
-        return (result)
+                    
+        data = persona.nationality_review()
+
+        fig, ax = plt.subplots(figsize=(16, 9))
+
+        height = data[0]
+        bars = data[1]
+        y_pos = np.arange(len(bars))
+
+        plt.bar(y_pos, height)
+        plt.xticks(y_pos, bars)
+
+        output = io.BytesIO()
+        FigureCanvas(fig).print_png(output)
+
+        return Response(output.getvalue(), mimetype='image/png')
     except:
         return jsonify({'trace': traceback.format_exc()})
 
@@ -113,13 +128,17 @@ def comparativa():
 def registro():
     if request.method == 'POST':
         # Obtener del HTTP POST JSON el nombre y los pulsos
-        # name = ...
-        # age = ...
-        # nationality = ...
+        name = str(request.form.get('name'))
+        age = str(request.form.get('age'))
+        nationality = str(request.form.get('nationality'))
+
+        if(name is None or age is None or nationality is None or age.isdigit() is False):
+            # Datos ingresados incorrectos
+            return Response(status=404)
         
-        # persona.insert(name, int(age), nationality)
+        persona.insert(name, int(age), nationality)
         return Response(status=200)
-    
+
 
 if __name__ == '__main__':
     print('Servidor arriba!')
